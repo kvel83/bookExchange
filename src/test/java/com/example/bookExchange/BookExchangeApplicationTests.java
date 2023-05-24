@@ -2,6 +2,7 @@ package com.example.bookExchange;
 
 import com.example.bookExchange.entity.Book;
 import com.example.bookExchange.repository.BookRepository;
+import com.sun.xml.bind.v2.TODO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,7 @@ class BookExchangeApplicationTests {
 	public void testSaveBook(){
 		Book book = new Book("Harry Potter", "12367800", "Antártica", "JK. Rowling", 250, "Fantasia", "");
 		Book response = restTemplate.postForObject(baseURL, book, Book.class);
+		//TODO:Revisar por que falla la verificacion de titulo
 		//assertEquals("Harry Potter", response.getBookTitle());
 		assertEquals(4, repository.findAll().size());
 	}
