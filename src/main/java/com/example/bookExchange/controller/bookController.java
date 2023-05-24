@@ -28,12 +28,12 @@ public class bookController {
         bookService.saveBook(book);
     }
 
-    @PostMapping("/{bookId}")
+    @PostMapping("/update/{bookId}")
     public void updateBook(@RequestBody Book book, @PathVariable("bookId") Long bookId){
         bookService.updateBook(bookId, book);
     }
 
-    @DeleteMapping("/{bookId}")
+    @DeleteMapping("/delete/{bookId}")
     public void deleteBook(@PathVariable("bookId") Long bookId){
         bookService.deleteBook(bookId);
     }
