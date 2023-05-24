@@ -28,7 +28,7 @@ public class bookController {
         bookService.saveBook(book);
     }
 
-    @PostMapping("/update/{bookId}")
+    @PutMapping("/update/{bookId}")
     public void updateBook(@RequestBody Book book, @PathVariable("bookId") Long bookId){
         bookService.updateBook(bookId, book);
     }
