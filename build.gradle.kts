@@ -26,6 +26,10 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit:junit-gradle:5.0.0-ALPHA")
+	//Se agregan dependencias Spring Security y Bcrypt 29/05/2023 @katia velasquez
+	implementation ("org.springframework.boot:spring-boot-starter-security")
+	implementation ("org.mindrot:jbcrypt:0.4")
+
 }
 
 tasks.withType<Test> {

@@ -15,7 +15,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookId;
     private String bookTitle;
-    @Column(unique = true)
+    @Column(name = "isbn", unique = true) // Se agrega restricción de que el campo sea único 29/05/2023 @Katia Velasquez
     private  String bookIsbn;
     private String bookEditorial;
     private String bookAuthor;

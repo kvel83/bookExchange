@@ -40,20 +40,20 @@ class BookExchangeApplicationTests {
 	@Test
 	public void testGetAllBooks(){
 		List<Book> books = restTemplate.getForObject(baseURL, List.class);
-		assertEquals(4, books.size());
+		assertEquals(7, books.size());
 
 	}
 
 	//Test para método que trae un libro por id
 	@Test
 	public void testGetBook(){
-		int id = 12;//Colocar un id existente en la base de datos
+		int id = 25;//Colocar un id existente en la base de datos
 		baseURL = baseURL.concat("/" + id);
 		Book book = restTemplate.getForObject(baseURL, Book.class);
 		assertAll(
 				() -> assertNotNull(book),
-				() -> assertEquals(12, book.getBookId()),
-				() -> assertEquals("Las 2 torres", book.getBookTitle())
+				() -> assertEquals(25, book.getBookId()),
+				() -> assertEquals("Ready player two", book.getBookTitle())
 
 		);
 	}
@@ -61,11 +61,11 @@ class BookExchangeApplicationTests {
 	//Test para actualizacion de libro
 	@Test
 	public void testUpdateBook(){
-		int id = 7;//Colocar un id existente en la BBDD
+		int id = 18;//Colocar un id existente en la BBDD
 		baseURL = baseURL.concat("/update/" + id);
-		Book book = new Book("Harry Potter y el prisionero de Azkaban", "1234567890", "Antártica", "JK. Rowling", 250, "Fantasia", "");
-		restTemplate.put(baseURL, book, 7);
-		Book bookFromDB = repository.findById(7L).get();
+		Book book = new Book("Fundación", "8497599241", "Debolsillo", "Isaac Asimov", 264, "Ciencia ficción", "");
+		restTemplate.put(baseURL, book, id);
+		Book bookFromDB = repository.findById(18L).get();
 		assertAll(
 				() -> assertNotNull(bookFromDB),
 				() -> assertEquals("Harry Potter y el prisionero de Azkaban", bookFromDB.getBookTitle())
@@ -75,12 +75,12 @@ class BookExchangeApplicationTests {
 	//Test para eliminacion de un libro
 	@Test
 	public void testDeleteBook(){
-		int id = 8;//Colocar un ID existente en la BBDD
+		int id = 23;//Colocar un ID existente en la BBDD
 		int recordSize = repository.findAll().size();//Cantidad de registros en la BBDD
-		assertEquals(3, recordSize );
+		assertEquals(7, recordSize );
 		baseURL = baseURL.concat("/delete/" + id);
 		restTemplate.delete(baseURL);
-		assertEquals(2, recordSize - 1);
+		assertEquals(6, recordSize - 1);
 	}
 	//Test para guardar un libro
 	@Test
@@ -89,6 +89,6 @@ class BookExchangeApplicationTests {
 		Book response = restTemplate.postForObject(baseURL, book, Book.class);
 		//TODO:Revisar por que falla la verificacion de titulo
 		//assertEquals("Harry Potter", response.getBookTitle());
-		assertEquals(4, repository.findAll().size());
+		assertEquals(6, repository.findAll().size());
 	}
 }
