@@ -11,6 +11,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tbl_roles")
 public class Role {
@@ -19,6 +20,6 @@ public class Role {
     private Long roleId;
     private String roleName;
     @Column(name = "role", unique = true)
-    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     private Set<User> users;
 }

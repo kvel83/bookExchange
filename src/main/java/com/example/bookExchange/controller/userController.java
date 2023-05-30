@@ -1,10 +1,13 @@
 package com.example.bookExchange.controller;
 
+import com.example.bookExchange.dto.UserDTO;
 import com.example.bookExchange.entity.Book;
 import com.example.bookExchange.entity.User;
 import com.example.bookExchange.service.BookService;
 import com.example.bookExchange.service.UserService;
+import com.example.bookExchange.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +19,20 @@ public class userController {
     @Autowired
     private UserService userService;
     @GetMapping
-    public List<User> getAll(){
+    public List<UserDTO> getAll(){
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{userId}")
-    public Optional<User> getUserById(@PathVariable("userId") Long userId){
-        return userService.getUser(userId);
+    @GetMapping("/id/{userId}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") Long userId){
+        Optional<User> userWithRole= userService.getUserWithRole(userId);
+        if (userWithRole.isPresent()){
+            User user = userWithRole.get();
+            UserDTO userDTO = Util.converToUserDTO(user);
+            return ResponseEntity.ok(userDTO);
+        } else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{userName}")
