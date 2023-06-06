@@ -7,6 +7,7 @@ import com.example.bookExchange.entity.User;
 import com.example.bookExchange.repository.UserRepository;
 import com.example.bookExchange.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 public class UserService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -38,6 +41,8 @@ public class UserService {
     public Optional<User> getUserByUserName (String userName){return userRepository.findByUserName(userName);}
 
     public void saveUser(User user){
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
         userRepository.save(user);
     }
 
@@ -55,7 +60,15 @@ public class UserService {
             user.setAge(updatedUser.getAge());
             userRepository.save(user);
         });
+    }
 
+    public void updateUser (Long id, String newPassword){
+        Optional<User> optionalUser = userRepository.findById(id);
+        optionalUser.ifPresent((user -> {
+            String encryptedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(encryptedPassword);
+            userRepository.save(user);
+        }));
     }
 }
 

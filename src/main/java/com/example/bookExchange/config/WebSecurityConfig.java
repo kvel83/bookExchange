@@ -15,6 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +35,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
+
+    /*@Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;*/
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -60,9 +69,43 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                //enable CORS support
+                .and().cors();
 
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
+    /*@Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://localhost:5173")); // specify allowed origins
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "UPDATE", "DELETE")); // specify allowed HTTP methods
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // register the configuration to the path you want to enable CORS for
+        return source;
+    }*/
+
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Reemplaza con tu origen permitido
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // Agrega los métodos HTTP permitidos
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Permite todos los encabezados
+        configuration.setAllowCredentials(true); // Habilita el uso de credenciales (cookies, encabezados de autorización, etc.)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return new CorsFilter(source);
+    }
+
+
+    // create a CorsFilter bean to handle CORS requests using corsConfigurationSource
+    /*@Bean
+    public CorsFilter corsFilter() {
+        CorsConfigurationSource source = corsConfigurationSource();
+        CorsFilter filter = new CorsFilter(source);
+        return filter;
+    }*/
 }

@@ -1,7 +1,11 @@
 package com.example.bookExchange.controller;
 
 import java.util.Objects;
+import java.util.Optional;
 
+import com.example.bookExchange.entity.Role;
+import com.example.bookExchange.entity.User;
+import com.example.bookExchange.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +25,8 @@ import com.example.bookExchange.config.JwtTokenUtil;
 import com.example.bookExchange.model.JwtRequest;
 import com.example.bookExchange.model.JwtResponse;
 
+import com.example.bookExchange.entity.UsuarioResponse;
+
 @RestController
 @CrossOrigin
 public class JwtAuthenticationController {
@@ -34,8 +40,11 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<UsuarioResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
@@ -44,7 +53,11 @@ public class JwtAuthenticationController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        final Optional<User> user = userService.getUserByUserName(userDetails.getUsername());
+
+        UsuarioResponse usuarioResponse = new UsuarioResponse(userDetails.getUsername(),user.get().getRole().getRoleId() ,token);
+
+        return ResponseEntity.ok(usuarioResponse);
     }
 
     private void authenticate(String username, String password) throws Exception {

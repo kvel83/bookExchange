@@ -4,8 +4,17 @@ import com.example.bookExchange.dto.RoleDTO;
 import com.example.bookExchange.dto.UserDTO;
 import com.example.bookExchange.entity.Role;
 import com.example.bookExchange.entity.User;
+import com.example.bookExchange.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+
+import java.util.Optional;
 
 public class Util {
+
+    @Autowired
+    private UserRepository userRepository;
+
     public static RoleDTO convertToRoleDTO(Role role){
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setRoleId(role.getRoleId());
@@ -21,4 +30,6 @@ public class Util {
         userDTO.setRole(convertToRoleDTO(user.getRole()));
         return userDTO;
     }
+
+
 }
