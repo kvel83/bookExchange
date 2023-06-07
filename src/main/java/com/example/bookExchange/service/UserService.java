@@ -25,7 +25,7 @@ public class UserService {
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserDTO> usersDTO = new ArrayList<UserDTO>();
-        if (users.size() > 0){
+        if (!users.isEmpty()){
             for (User user:users){
                 usersDTO.add(Util.converToUserDTO(user));
             }
